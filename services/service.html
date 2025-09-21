@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book Service Location - MechFix</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #f9f9f9;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    #locationInput {
+      width: 320px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    #map {
+      width: 90%;
+      max-width: 600px;
+      height: 350px;
+      border-radius: 12px;
+      border: 2px solid #ddd;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px 20px;
+      background: #ff6600;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #e65c00;
+    }
+
+    #status {
+      margin-top: 10px;
+      font-size: 14px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h2>Select Service Location</h2>
+  <input id="locationInput" type="text" placeholder="Enter service location" />
+  <div id="map"></div>
+  <button id="saveLocationBtn">Save Location</button>
+  <p id="status"></p>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+    import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyCEVdqRtNc1LDZAK76PXnG8QWZJLfQz_fY",
+  authDomain: "autoconnect-fs4ij.firebaseapp.com",
+  projectId: "autoconnect-fs4ij",
+  storageBucket: "autoconnect-fs4ij.firebasestorage.app",
+  messagingSenderId: "48085992311",
+  appId: "1:48085992311:web:d8ba8d76cee96d67ac5772"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    let selectedPlace = null;
+
+    window.initMap = function () {
+      const map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 28.6139, lng: 77.2090 }, // Default: New Delhi
+        zoom: 13,
+      });
+
+      const input = document.getElementById("locationInput");
+      const autocomplete = new google.maps.places.Autocomplete(input);
+      autocomplete.bindTo("bounds", map);
+
+      const marker = new google.maps.Marker({ map, draggable: true });
+
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        if (!place.geometry) return;
+
+        map.setCenter(place.geometry.location);
+        map.setZoom(15);
+        marker.setPosition(place.geometry.location);
+        selectedPlace = {
+          address: place.formatted_address,
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng(),
+        };
+      });
+
+      // If user drags marker
+      marker.addListener("dragend", () => {
+        const pos = marker.getPosition();
+        selectedPlace = {
+          address: input.value,
+          lat: pos.lat(),
+          lng: pos.lng(),
+        };
+      });
+    };
+
+    document.getElementById("saveLocationBtn").addEventListener("click", async () => {
+      if (!selectedPlace) {
+        alert("Please select a location first!");
+        return;
+      }
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          await setDoc(doc(db, "serviceLocations", user.uid), {
+            ...selectedPlace,
+            userId: user.uid,
+            createdAt: new Date(),
+          });
+          document.getElementById("status").textContent = "✅ Location saved successfully!";
+        } else {
+          alert("You must be logged in to save location.");
+        }
+      });
+    });
+  </script>
+
+  <!-- Google Maps JS API (Enable Places API in console & replace YOUR_API_KEY) -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADrq3tgFlegXKmSj1r49RGKOcrN60-F8Q" async defer></script>
+</body>
+</html>

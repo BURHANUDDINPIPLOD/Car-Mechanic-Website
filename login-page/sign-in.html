@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Sign Up</title>
+  <style>
+    body { font-family: Arial, sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; background:#f4f4f4; }
+    .box { background:#fff; padding:2rem; border-radius:10px; width:350px; text-align:center; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
+    input, button { width:100%; padding:10px; margin:10px 0; border-radius:6px; border:1px solid #ddd; }
+    button { background:black; color:white; font-weight:bold; border:none; cursor:pointer; }
+    button:hover { background:#333; }
+    .error { color:red; }
+
+     /* Header Styles */
+     .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 0 5%;
+            transition: all 0.3s ease;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 5rem;
+        }
+
+        .nav-menu a {
+            color: #fffafa;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: #ff6600;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #fff6f6;
+            color: #fff7f7;
+        }
+
+        .btn-outline:hover {
+            background: #ff6600;
+            color: white;
+        }
+
+        .btn-primary {
+            background: #ffffff;
+            color: rgb(0, 0, 0);
+        }
+
+        .btn-primary:hover {
+            background: #ff6600;
+            transform: translateY(-2px);
+        }
+
+        /* Dropdown styles */
+.nav-menu li {
+    position: relative;
+  }
+  
+  .nav-menu .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #000;
+    list-style: none;
+    padding: 10px 0;
+    min-width: 180px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+  
+  .nav-menu .dropdown-menu li {
+    padding: 0;
+  }
+  
+  .nav-menu .dropdown-menu li a {
+    display: block;
+    padding: 10px 20px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+  }
+  
+  .nav-menu .dropdown-menu li a:hover {
+    background: #ff6600;
+  }
+  
+  /* Show on hover */
+  .nav-menu .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav">
+      <a href="/index.html" class="logo">MechFix</a>
+      <ul class="nav-menu">
+        <!-- Services Dropdown -->
+        <li class="dropdown">
+          <a href="#">Services ▼</a>
+          <ul class="dropdown-menu">
+            <li><a href="services.html">Our Services</a></li>
+            <li><a href="car-repair.html">Car Repair</a></li>
+            <li><a href="bike-repair.html">Bike Repair</a></li>
+            <li><a href="emergency.html">Emergency Breakdown</a></li>
+          </ul>
+        </li>
+  
+        <!-- Mechanics -->
+        <li><a href="#how-it-works">For Mechanics</a></li>
+  
+        <!-- About Dropdown -->
+        <li class="dropdown">
+          <a href="#">About ▼</a>
+          <ul class="dropdown-menu">
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="careers.html">Careers</a></li>
+          </ul>
+        </li>
+  
+        <!-- Support Dropdown -->
+        <li class="dropdown">
+          <a href="#">Support ▼</a>
+          <ul class="dropdown-menu">
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="faqs.html">FAQs</a></li>
+            <li><a href="help.html">Help Center</a></li>
+          </ul>
+        </li>
+      </ul>
+  
+      <!-- Buttons -->
+      <div class="nav-buttons">
+        <a href="/login-page/mech-login.html" class="btn btn-outline">Mechanic Signup</a>
+        <a href="/login-page/login.html" class="btn btn-primary">Login</a>
+      </div>
+    </nav>
+  </header>
+  
+
+
+  <div class="box">
+    <h2>User Sign Up</h2>
+    <input id="name" type="text" placeholder="Full Name" required>
+    <input id="email" type="email" placeholder="Email" required>
+    <input id="password" type="password" placeholder="Password" required>
+    <input id="phone" type="text" placeholder="Phone Number" required>
+    <button onclick="signupUser()">Sign Up</button>
+    <p class="error" id="errorMsg"></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyCEVdqRtNc1LDZAK76PXnG8QWZJLfQz_fY",
+  authDomain: "autoconnect-fs4ij.firebaseapp.com",
+  projectId: "autoconnect-fs4ij",
+  storageBucket: "autoconnect-fs4ij.firebasestorage.app",
+  messagingSenderId: "48085992311",
+  appId: "1:48085992311:web:d8ba8d76cee96d67ac5772"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window.signupUser = async function () {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const phone = document.getElementById("phone").value;
+      const errorMsg = document.getElementById("errorMsg");
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = userCredential.user.uid;
+
+        // Save extra info in Firestore under "users"
+        await setDoc(doc(db, "users", uid), {
+          name: name,
+          email: email,
+          phone: phone,
+          role: "user",
+          createdAt: new Date()
+        });
+
+        alert("User Sign Up Successful ✅");
+        window.location.href = "/login-page/login.html";
+      } catch (error) {
+        console.error(error);
+        errorMsg.textContent = error.message;
+      }
+    };
+  </script>
+</body>
+</html>

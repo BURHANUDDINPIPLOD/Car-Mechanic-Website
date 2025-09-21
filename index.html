@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MechFix - On-Demand Car Service</title>
+    <link rel="stylesheet" href="script.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+          <a href="index.html" class="logo">MechFix</a>
+          <ul class="nav-menu">
+            <!-- Services Dropdown -->
+            <li class="dropdown">
+              <a href="#">Services ▼</a>
+              <ul class="dropdown-menu">
+                <li><a href="services.html">Our Services</a></li>
+                <li><a href="car-repair.html">Car Repair</a></li>
+                <li><a href="bike-repair.html">Bike Repair</a></li>
+                <li><a href="emergency.html">Emergency Breakdown</a></li>
+              </ul>
+            </li>
+      
+            <!-- Mechanics -->
+            <li><a href="#how-it-works">For Mechanics</a></li>
+      
+            <!-- About Dropdown -->
+            <li class="dropdown">
+              <a href="#">About ▼</a>
+              <ul class="dropdown-menu">
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="careers.html">Careers</a></li>
+              </ul>
+            </li>
+      
+            <!-- Support Dropdown -->
+            <li class="dropdown">
+              <a href="#">Support ▼</a>
+              <ul class="dropdown-menu">
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="faqs.html">FAQs</a></li>
+                <li><a href="help.html">Help Center</a></li>
+              </ul>
+            </li>
+          </ul>
+      
+          <!-- Buttons -->
+          <div class="nav-buttons">
+            <a href="login-page/mech-login.html" class="btn btn-outline">Mechanic Signup</a>
+            <a href="login-page/login.html" class="btn btn-primary">Login</a>
+          </div>
+        </nav>
+      </header>
+      
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Car trouble? We've got you covered.</h1>
+                <p class="hero-subtitle">Get professional mechanics at your location within minutes. Emergency or scheduled - we're here 24/7.</p>
+            </div>
+            
+            <div class="booking-section">
+                <h1 class="section-title">Go anywhere with MechFix</h1>
+                
+                <div class="location-container">
+                    <div class="location-line"></div>
+                    
+                    <div class="location-input-group">
+                        <div class="location-dot pickup-dot"></div>
+                        <input type="text" class="location-input" id="pickupLocation" placeholder="Service location">
+                        <button class="current-location-btn" id="getCurrentLocation" title="Use current location">📍</button>
+                        <div class="location-suggestions" id="pickupSuggestions"></div>
+                    </div>
+                </div>
+                
+                <div class="datetime-container">
+                    <div class="datetime-group">
+                        <label class="datetime-label">Date</label>
+                        <button class="datetime-input" id="dateSelector">
+                            <span class="datetime-icon">📅</span>
+                            <span id="selectedDate">Today</span>
+                        </button>
+                    </div>
+                    
+                    <div class="datetime-group">
+                        <label class="datetime-label">Time</label>
+                        <button class="datetime-input" id="timeSelector">
+                            <span class="datetime-icon">🕐</span>
+                            <span id="selectedTime">Now</span>
+                            <span style="margin-left: auto;">▼</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="actions-container">
+                    <button class="see-prices-btn" id="seePricesBtn">See prices</button>
+                    <a href="#" class="login-link">Log in to see your recent activity</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <div style="font-size: 1.5rem;">↓</div>
+            <div>Scroll to explore</div>
+        </div>
+    </section>
+
+    <section class="login-section">
+        <!-- Left side -->
+        <div class="login-content">
+          <h2>Log in to see your account details</h2>
+          <p>View past trips, tailored suggestions, support resources, and more.</p>
+          <div class="login-buttons">
+            <a href="/login-page/login.html">
+            <button class="login-btn">Log in to your account</button>
+            <a href="login-page/mech-login.html" class="create-account">Click here if you are a Mechanic</a>
+        </a>
+          </div>
+        </div>
+    
+        <!-- Right side (replace image with yours) -->
+        <div class="login-illustration">
+          <img src="images/mockup-1.png" alt="Login Illustration">
+        </div>
+      </section>
+
+    <!-- Features Section -->
+    <section class="features" id="services">
+        <div class="features-container">
+            <h2 class="section-title">Why Choose MechFix?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚨</div>
+                    <h3 class="feature-title">Emergency SOS</h3>
+                    <p class="feature-description">One-tap emergency assistance with priority dispatch to get you back on the road fast.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">AI Predictions</h3>
+                    <p class="feature-description">Smart maintenance reminders based on your driving patterns and vehicle history.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3 class="feature-title">Verified Mechanics</h3>
+                    <p class="feature-description">All mechanics are background-checked, certified, and continuously rated by customers.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📹</div>
+                    <h3 class="feature-title">Video Diagnosis</h3>
+                    <p class="feature-description">Get expert diagnosis through video calls before the mechanic arrives.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3 class="feature-title">Multi-Language</h3>
+                    <p class="feature-description">Service available in Hindi, Marathi, Tamil, and other regional languages.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔎</div>
+                    <h3 class="feature-title">Real-Time Tracking</h3>
+                    <p class="feature-description">Track your mechanic's location in real-time, just like you track your ride.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="features-container">
+            <h2 class="section-title">How MechFix Works</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Download & Register</h3>
+                    <p>Install the MechFix app, create your account, and add your vehicle details.</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Select Your Service</h3>
+                    <p>Choose from options like engine repair, battery jumpstart, tire replacement, or general service.</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Set Pickup Location</h3>
+                    <p>Enter your location or use “Current Location” to let the mechanic find you instantly.</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Browse Mechanics Nearby</h3>
+                    <p>View available mechanics, check their ratings, estimated arrival time, and service charges.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">5</div>
+                    <h3>Book Instantly</h3>
+                    <p>Confirm your request with one tap and make a secure payment (online or cash).</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">6</div>
+                    <h3>Track Mechanic in Real-Time</h3>
+                    <p>Watch your mechanics live location as they arrive at your spot.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">7</div>
+                    <h3>Get Service Done On-Site</h3>
+                    <p>The mechanic reaches you, performs the required service, and ensures your vehicle is ready.</p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">8</div>
+                    <h3>Rate & Review</h3>
+                    <p>Share feedback about the mechanic to help others and improve service quality.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <h2 class="cta-title">Ready to get started?</h2>
+        <p class="cta-subtitle">Download the MechFix app and never worry about car troubles again.</p>
+        <div class="app-buttons">
+            <a href="#" class="app-btn">
+                <span></span>
+                Download for iOS
+            </a>
+            <a href="#" class="app-btn">
+                <span>📱</span>
+                Download for Android
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+          <!-- Logo & Help -->
+          <div class="footer-col brand">
+            <h2>MechFix</h2>
+            <a href="#">Visit Help Center</a>
+          </div>
+      
+          <!-- Company -->
+          <div class="footer-col">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Our Services</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Careers</a></li>
+              <li><a href="#">Press</a></li>
+              <li><a href="#">Partners</a></li>
+            </ul>
+          </div>
+      
+          <!-- Services -->
+          <div class="footer-col">
+            <h4>Services</h4>
+            <ul>
+              <li><a href="#">Car Repair</a></li>
+              <li><a href="#">Bike Repair</a></li>
+              <li><a href="#">Emergency Breakdown</a></li>
+              <li><a href="#">Battery Replacement</a></li>
+              <li><a href="#">Tyre Services</a></li>
+              <li><a href="#">Oil & Filters</a></li>
+              <li><a href="#">Home Service Booking</a></li>
+            </ul>
+          </div>
+      
+          <!-- For Mechanics -->
+          <div class="footer-col">
+            <h4>For Mechanics</h4>
+            <ul>
+              <li><a href="#">Join as Mechanic</a></li>
+              <li><a href="#">Training & Resources</a></li>
+              <li><a href="#">MechFix Rewards</a></li>
+              <li><a href="#">Partner Support</a></li>
+            </ul>
+          </div>
+      
+          <!-- Support -->
+          <div class="footer-col">
+            <h4>Support</h4>
+            <ul>
+              <li><a href="#">FAQs</a></li>
+              <li><a href="#">Contact Us</a></li>
+              <li><a href="#">Service Policies</a></li>
+              <li><a href="#">Cancellation & Refund</a></li>
+              <li><a href="#">Safety Guidelines</a></li>
+            </ul>
+          </div>
+        </div>
+      
+        <!-- Bottom -->
+        <div class="footer-bottom">
+          <div class="socials">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-x-twitter"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+          <div class="location-lang">
+            <span><i class="fas fa-globe"></i> English</span>
+            <span><i class="fas fa-map-marker-alt"></i> India</span>
+          </div>
+        </div>
+      </footer>
+      
+      <!-- Font Awesome Icons -->
+      <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
+      
+</body>
+</html>

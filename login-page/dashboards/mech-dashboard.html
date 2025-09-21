@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mechanic Dashboard - MechFix</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      color: #333;
+    }
+
+    .dashboard {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      color: #ff6600;
+    }
+
+    .sidebar a, .sidebar button {
+      margin: 10px 0;
+      padding: 10px;
+      background: none;
+      border: none;
+      color: white;
+      text-align: left;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+      display: block;
+    }
+
+    .sidebar a:hover, .sidebar button:hover {
+      background: #ff6600;
+      border-radius: 6px;
+    }
+
+    .logout {
+      margin-top: auto;
+      background: #ff6600;
+      border-radius: 6px;
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .banner {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .banner img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #ff6600;
+    }
+
+    button {
+      background: #ff6600;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #e55a00;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul li {
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>MechFix</h2>
+      <a href="#jobs">Assigned Jobs</a>
+      <a href="#history">Job History</a>
+      <a href="#earnings">Earnings</a>
+      <a href="#">Profile Settings</a>
+      <button class="logout" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+      <!-- Welcome Banner -->
+      <div class="banner">
+        <img id="profilePic" src="images/mechanic.jpeg" alt="Mechanic Profile">
+        <h2 id="welcomeName">Welcome, Mechanic</h2>
+      </div>
+
+      <!-- Assigned Jobs -->
+      <div id="jobs" class="card">
+        <h3>Assigned Jobs</h3>
+        <ul id="jobList"></ul>
+      </div>
+
+      <!-- Job History -->
+      <div id="history" class="card">
+        <h3>Job History</h3>
+        <ul id="historyList"></ul>
+      </div>
+
+      <!-- Earnings -->
+      <div id="earnings" class="card">
+        <h3>Earnings</h3>
+        <p>Total Earnings: <strong id="totalEarnings">₹0</strong></p>
+        <p>Pending Payout: <strong id="pendingPayout">₹0</strong></p>
+        <button onclick="withdraw()">Request Payout</button>
+      </div>
+
+      <!-- Profile Settings -->
+      <div id="profile" class="card">
+        <h3>Profile Settings</h3>
+        <input type="text" id="name" placeholder="Full Name"><br><br>
+        <input type="text" id="phone" placeholder="Phone Number"><br><br>
+        <input type="text" id="skills" placeholder="Specialization (e.g. Engine, Electrical)"><br><br>
+        <button onclick="saveProfile()">Save Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase + JS -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs, doc, updateDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCEVdqRtNc1LDZAK76PXnG8QWZJLfQz_fY",
+      authDomain: "autoconnect-fs4ij.firebaseapp.com",
+      projectId: "autoconnect-fs4ij",
+      storageBucket: "autoconnect-fs4ij.firebasestorage.app",
+      messagingSenderId: "48085992311",
+      appId: "1:48085992311:web:d8ba8d76cee96d67ac5772"
+    };
+
+    // Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const jobList = document.getElementById("jobList");
+    const historyList = document.getElementById("historyList");
+    const totalEarningsEl = document.getElementById("totalEarnings");
+    const pendingPayoutEl = document.getElementById("pendingPayout");
+
+    let totalEarnings = 0;
+    let pendingPayout = 0;
+
+    // Auth check
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        document.getElementById("welcomeName").textContent = `Welcome, ${user.displayName || "Mechanic"}`;
+
+        // Fetch mechanic jobs
+        const q = query(collection(db, "bookings"), where("mechanicId", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+
+        jobList.innerHTML = "";
+        historyList.innerHTML = "";
+        totalEarnings = 0;
+        pendingPayout = 0;
+
+        querySnapshot.forEach((docSnap) => {
+          const job = docSnap.data();
+          if (job.status === "Assigned") {
+            const li = document.createElement("li");
+            li.innerHTML = `
+              <span>${job.service} - ${job.vehicle} (${job.location})</span>
+              <button onclick="markComplete('${docSnap.id}', ${job.price || 0})">Mark Complete</button>
+            `;
+            jobList.appendChild(li);
+          } else if (job.status === "Completed") {
+            const li = document.createElement("li");
+            li.textContent = `Completed - ${job.service} (${job.vehicle})`;
+            historyList.appendChild(li);
+            totalEarnings += job.price || 0;
+          }
+        });
+
+        updateEarnings();
+      } else {
+        window.location.href = "../login-page/login.html";
+      }
+    });
+
+    // Mark job complete
+    window.markComplete = async function (jobId, price) {
+      const jobRef = doc(db, "bookings", jobId);
+      await updateDoc(jobRef, { status: "Completed" });
+
+      totalEarnings += price || 0;
+      pendingPayout += price || 0;
+      updateEarnings();
+
+      alert("Job marked as complete ✅");
+      location.reload();
+    };
+
+    function updateEarnings() {
+      totalEarningsEl.textContent = `₹${totalEarnings}`;
+      pendingPayoutEl.textContent = `₹${pendingPayout}`;
+    }
+
+    // Withdraw
+    window.withdraw = function () {
+      if (pendingPayout > 0) {
+        alert("Payout request sent ✅");
+        pendingPayout = 0;
+        updateEarnings();
+      } else {
+        alert("No pending payout.");
+      }
+    };
+
+    // Save Profile
+    window.saveProfile = async function () {
+      const name = document.getElementById("name").value;
+      const phone = document.getElementById("phone").value;
+      const skills = document.getElementById("skills").value;
+
+      const profileRef = collection(db, "mechanicProfiles");
+      await addDoc(profileRef, { name, phone, skills, userId: auth.currentUser.uid });
+
+      alert("Profile updated successfully!");
+    };
+
+    // Logout
+    window.logout = function () {
+      signOut(auth).then(() => {
+        window.location.href = "thankyou.html";
+      }).catch((error) => {
+        console.error("Logout error", error);
+      });
+    };
+  </script>
+</body>
+</html>

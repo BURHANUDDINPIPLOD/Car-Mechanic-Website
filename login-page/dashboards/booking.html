@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings - MechFix</title>
+  <link rel="stylesheet" href="booking.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>MechFix</h2>
+      <a href="user-dashboard.html">Dashboard</a>
+      <a href="booking.html" class="active">My Bookings</a>
+      <a href="profile.html">Profile</a>
+      <button class="logout" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+      <div class="banner">
+        <h2>📅 My Bookings</h2>
+        <p>Track your service history and upcoming bookings</p>
+      </div>
+
+      <!-- Booking Summary -->
+      <div class="summary-cards">
+        <div class="card upcoming">
+          <h3>Upcoming</h3>
+          <p id="upcomingCount">0</p>
+        </div>
+        <div class="card completed">
+          <h3>Completed</h3>
+          <p id="completedCount">0</p>
+        </div>
+      </div>
+
+      <!-- Graph Section -->
+      <div class="card graph-card">
+        <h3>Bookings Overview</h3>
+        <canvas id="bookingChart"></canvas>
+      </div>
+
+      <!-- Booking List -->
+      <div class="card table-card">
+        <h3>Booking History</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Vehicle</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="bookingTableBody">
+            <!-- JS will inject bookings -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="booking.js"></script>
+</body>
+</html>

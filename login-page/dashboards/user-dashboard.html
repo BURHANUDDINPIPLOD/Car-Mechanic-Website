@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Dashboard - MechFix</title>
+  <style>
+    /* General Layout */
+body {
+  margin: 0;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  background: #f9f9f9;
+  color: #222;
+}
+
+/* Dashboard wrapper */
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: #000;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1rem;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.sidebar h2 {
+  font-size: 1.6rem;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  color: #ff6600;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: #bbb;
+  font-weight: 500;
+  padding: 0.8rem 1rem;
+  margin: 0.3rem 0;
+  border-radius: 8px;
+  transition: all 0.3s;
+  display: block;
+}
+
+.sidebar a:hover {
+  background: #ff6600;
+  color: #fff;
+}
+
+.sidebar .logout {
+  margin-top: auto;
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #ff6600;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.sidebar .logout:hover {
+  background: #e25500;
+}
+
+/* Main Section */
+.main {
+  margin-left: 240px;
+  padding: 2rem;
+  flex: 1;
+}
+
+/* Welcome Banner */
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #fff;
+  padding: 1.2rem;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+.banner img {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ff6600;
+}
+
+.banner h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+/* Cards */
+.card {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  margin-bottom: 2rem;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #111;
+}
+
+/* Inputs & Buttons */
+input, select, textarea {
+  width: 100%;
+  padding: 0.8rem;
+  margin: 0.6rem 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+button {
+  background: #ff6600;
+  color: #fff;
+  padding: 0.9rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+  margin-top: 0.5rem;
+}
+
+button:hover {
+  background: #e25500;
+}
+
+/* Lists */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  padding: 0.8rem;
+  border-bottom: 1px solid #eee;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+ul li:last-child {
+  border-bottom: none;
+}
+
+  </style>
+</head>
+<body>
+
+<div class="dashboard">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>MechFix</h2>
+    <a href="#book">Book a Service</a>
+    <a href="booking.html">My Bookings</a>
+    <a href="#vehicles">Saved Vehicles</a>
+    <a href="#payments">Payment History</a>
+    <a href="profile.html">Profile Settings</a>
+    <button class="logout" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Welcome Banner -->
+    <div class="banner">
+      <img id="profilePic" src="images/profile.jpeg" alt="Profile">
+      <h2 id="welcomeName">Welcome, User</h2>
+    </div>
+
+    <!-- Book a Service -->
+    <div id="book" class="card">
+      <h3>Book a Service</h3>
+      <select id="serviceType">
+        <option value="">Select Service</option>
+        <option value="Car Repair">Car Repair</option>
+        <option value="Bike Repair">Bike Repair</option>
+        <option value="Emergency">Emergency Breakdown</option>
+      </select>
+      <input id="vehicle" placeholder="Vehicle (e.g. Honda City 2019)">
+      <textarea id="issue" placeholder="Describe the issue"></textarea>
+      <button onclick="bookService()">Book Service</button>
+    </div>
+
+
+    <!-- Saved Vehicles -->
+    <div id="vehicles" class="card">
+      <h3>Saved Vehicles</h3>
+      <input id="vehicleName" placeholder="Car/Bike Model">
+      <input id="vehicleNumber" placeholder="Vehicle Number">
+      <button onclick="saveVehicle()">Save Vehicle</button>
+      <ul id="vehicleList"></ul>
+    </div>
+
+    <!-- Payment History -->
+    <div id="payments" class="card">
+      <h3>Payment History</h3>
+      <ul id="paymentList"></ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+  import { 
+    getAuth, onAuthStateChanged, signOut 
+  } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+  import { 
+    getFirestore, doc, getDoc, setDoc, addDoc, updateDoc, collection, query, where, getDocs 
+  } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+  // ✅ Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCEVdqRtNc1LDZAK76PXnG8QWZJLfQz_fY",
+    authDomain: "autoconnect-fs4ij.firebaseapp.com",
+    projectId: "autoconnect-fs4ij",
+    storageBucket: "autoconnect-fs4ij.firebasestorage.app",
+    messagingSenderId: "48085992311",
+    appId: "1:48085992311:web:d8ba8d76cee96d67ac5772"
+  };
+
+  // Init Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // 🔹 Load User Info
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        document.getElementById("welcomeName").textContent = "Welcome, " + (userData.name || "User");
+        document.getElementById("profilePic").src = userData.profilePic || "default-avatar.png";
+        document.getElementById("profileName").value = userData.name || "";
+        document.getElementById("profilePhone").value = userData.phone || "";
+      }
+      loadBookings();
+      loadVehicles();
+      loadPayments();
+    } else {
+      window.location.href = "login-page/login.html";
+    }
+  });
+
+  // 🔹 Book a Service
+  async function bookService() {
+    await addDoc(collection(db, "bookings"), {
+      userId: auth.currentUser.uid,
+      serviceType: document.getElementById("serviceType").value,
+      vehicle: document.getElementById("vehicle").value,
+      issue: document.getElementById("issue").value,
+      time: new Date(),
+      status: "Pending"
+    });
+    alert("✅ Booking created!");
+    loadBookings();
+  }
+
+  // 🔹 Save Vehicle
+  async function saveVehicle() {
+    const vehicleName = document.getElementById("vehicleName").value;
+    const vehicleNumber = document.getElementById("vehicleNumber").value;
+    await addDoc(collection(db, "users", auth.currentUser.uid, "vehicles"), {
+      vehicleName,
+      vehicleNumber,
+      createdAt: new Date()
+    });
+    alert("✅ Vehicle saved!");
+    loadVehicles();
+  }
+
+  // 🔹 Load Vehicles
+  async function loadVehicles() {
+    const q = collection(db, "users", auth.currentUser.uid, "vehicles");
+    const querySnapshot = await getDocs(q);
+    const list = document.getElementById("vehicleList");
+    list.innerHTML = "";
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      list.innerHTML += `<li>${data.vehicleName} - ${data.vehicleNumber}</li>`;
+    });
+  }
+
+  // 🔹 Load Bookings
+  async function loadBookings() {
+    const q = query(collection(db, "bookings"), where("userId", "==", auth.currentUser.uid));
+    const querySnapshot = await getDocs(q);
+    const list = document.getElementById("bookingList");
+    list.innerHTML = "";
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      list.innerHTML += `<li>${data.serviceType} - ${data.vehicle} - ${data.status}</li>`;
+    });
+  }
+
+  // 🔹 Load Payments
+  async function loadPayments() {
+    const q = query(collection(db, "payments"), where("userId", "==", auth.currentUser.uid));
+    const querySnapshot = await getDocs(q);
+    const list = document.getElementById("paymentList");
+    list.innerHTML = "";
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      list.innerHTML += `<li>${data.amount} - ${data.status}</li>`;
+    });
+  }
+
+  // 🔹 Logout
+  function logout() {
+    signOut(auth).then(() => {
+      window.location.href = 'logout.html';
+    });
+  }
+
+  // ✅ Expose functions to window (so HTML onclick works)
+  window.bookService = bookService;
+  window.saveVehicle = saveVehicle;
+  window.loadBookings = loadBookings;
+  window.loadVehicles = loadVehicles;
+  window.loadPayments = loadPayments;
+  window.logout = logout;
+</script>
+
+
+</body>
+</html>
